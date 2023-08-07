@@ -1598,10 +1598,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9de3785ea8244b8489511f2ec5032a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
-  max_speed: 5
+  moveMethod: 2
+  speed: 5
+  max_speed: 7
   jump_power: 10
-  grivity_weight: 2
+  grivity_weight: 1
 --- !u!95 &1709328939
 Animator:
   serializedVersion: 5
