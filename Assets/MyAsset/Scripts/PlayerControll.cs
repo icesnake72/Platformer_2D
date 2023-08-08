@@ -52,13 +52,13 @@ public class PlayerControll : MonoBehaviour
         return rigid.velocity.y < 0;
     }
 
-    private bool Jumped
-    {
-        get
-        {
-            return (ps == PlayerState.jumping) || (ps == PlayerState.falling);
-        }
-    }
+    //private bool Jumped
+    //{
+    //    get
+    //    {
+    //        return (ps == PlayerState.jumping) || (ps == PlayerState.falling);
+    //    }
+    //}
 
     private bool isOverSpeed()
     {
@@ -82,8 +82,24 @@ public class PlayerControll : MonoBehaviour
     }
 
     private bool isGround()
-    {        
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, 1f, jumpableGround);
+    {
+        /*
+        이 문장은 Unity에서 Physics2D.BoxCast 함수를 사용하여 물리적인 상자 형태의 캐스트를 수행하는 것을 나타냅니다. 이 함수는 2D 공간에서 충돌을 검출하는 데 사용되며, 특히 지정한 경로를 따라 레이캐스팅을 수행하여 충돌 여부를 판단합니다.
+
+        coll.bounds.center: coll이라는 객체(일반적으로 Collider2D)의 중심점을 나타내는 벡터입니다. 이는 캐스팅의 시작점으로 사용됩니다.
+        coll.bounds.size: coll 객체의 크기를 나타내는 벡터로, 상자의 너비와 높이를 의미합니다.
+        0f: 상자 캐스팅의 회전 각도를 나타내며, 여기서는 회전 없이 직선 캐스팅을 하기 때문에 0도로 설정합니다.
+        Vector2.down: 상자 캐스팅의 방향을 나타내는 벡터입니다.여기서는 아래쪽 방향(떨어지는 방향)을 나타내는 벡터로 설정합니다.
+        1f: 상자 캐스팅의 최대 거리를 나타냅니다.이 경우 1 유닛 거리까지만 캐스팅을 수행합니다.
+        jumpableGround: 충돌을 검출할 레이어 마스크(Layer Mask)를 나타냅니다. jumpableGround 레이어 마스크에 해당하는 레이어와만 충돌을 검출하게 됩니다.
+        따라서 위의 코드는 coll 객체의 바운딩 박스를 기준으로 아래쪽으로 1 유닛 거리까지 상자 캐스팅을 수행하며, jumpableGround 레이어와의 충돌 여부를 검출합니다.이를 통해 지면과의 접촉 여부 등을 확인하고, 점프 가능한 상태인지 판단하는 데 사용될 수 있습니다.
+        */
+        return Physics2D.BoxCast(coll.bounds.center,    // 캐스팅의 시작점 
+                                 coll.bounds.size,      // 박스 콜라이더의 사이즈 
+                                 0f,                    // 박스 콜라이더의 기울임(앵글)
+                                 Vector2.down,          // 캐스트할 방향 
+                                 1f,                    // 캐스트할 거리 (1유닛)
+                                 jumpableGround);       // 충돌을 체크할 레이어 
     }
 
 
