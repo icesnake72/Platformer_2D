@@ -9,6 +9,9 @@ public class PlayerControll : MonoBehaviour
     private int moveMethod = 3;
 
     [SerializeField]
+    private int jumpMethod = 2;
+
+    [SerializeField]
     private float speed = 5f;
 
     [SerializeField]
@@ -20,9 +23,13 @@ public class PlayerControll : MonoBehaviour
     [SerializeField]
     private float grivity_weight = 1f;
 
+    [SerializeField]
+    private LayerMask jumpableGround;
+
     private Animator anim;
     private Rigidbody2D rigid;
     private SpriteRenderer sr;
+    private BoxCollider2D coll;
         
     private enum PlayerState { idle, running, jumping, falling };
     private PlayerState ps;
@@ -34,6 +41,7 @@ public class PlayerControll : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
+        coll = GetComponent<BoxCollider2D>();
     }
 
     private bool isGoingDown()
@@ -73,10 +81,15 @@ public class PlayerControll : MonoBehaviour
         }
     }
 
+    private bool isGround()
+    {        
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, 1f, jumpableGround);
+    }
+
 
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         // rigidbody를 이용한 움직임은 FixedUpdate()에서 처리해주는게 좋다
         switch (moveMethod)
@@ -94,29 +107,32 @@ public class PlayerControll : MonoBehaviour
                 break;
         }
         
-
-        if (isGoingDown())
+        switch (jumpMethod)
         {
-            Debug.Log("going down!!!");
-            ps = PlayerState.falling;
-            anim.SetInteger("state", (int)ps);
+            case 1:
+                JumpMethod1();
+                break;
 
-            rigid.velocity += grivity_weight * Physics2D.gravity * Time.deltaTime;
+            case 2:
+                JumpMethod2();
+                break;
+
+            case 3:
+                JumpMethod3();
+                break;
         }
-        else
-        {
-            JumpMethod2();
-        }
+
+        updateAnimationState();
     }
 
-    void MoveMethod1()
+    private void MoveMethod1()
     {
         float horiz = Input.GetAxis("Horizontal");
         Vector3 vec = new Vector3(horiz, 0f, 0f);
         transform.position += vec * speed * Time.deltaTime;
     }
 
-    void MoveMethod2()
+    private void MoveMethod2()
     {
         // horiz 값은 왼쪽 방향키가 눌리면 음수, 반대인 경우 양수가 된다 
         float horiz = Input.GetAxis("Horizontal");
@@ -134,14 +150,9 @@ public class PlayerControll : MonoBehaviour
             // 최대 속도 제한 
             rigid.velocity = new Vector2(Mathf.Sign(rigid.velocity.x) * max_speed, rigid.velocity.y);            
         }
-
-        if (!Jumped)
-            ps = isStop2 ? PlayerState.idle : PlayerState.running;
-
-        anim.SetInteger("state", (int)ps);
     }
 
-    void MoveMethod3()
+    private void MoveMethod3()
     {
         float horiz = Input.GetAxis("Horizontal");
         rigid.velocity = new Vector2(horiz * speed, rigid.velocity.y);
@@ -152,53 +163,41 @@ public class PlayerControll : MonoBehaviour
             // 최대 속도 제한 
             rigid.velocity = new Vector2(Mathf.Sign(rigid.velocity.x)*max_speed, rigid.velocity.y);            
         }       
-
-        if (!Jumped)
-            ps = isStop ? PlayerState.idle : PlayerState.running;
-
-        anim.SetInteger("state", (int)ps);
     }
 
-    void JumpMethod1()
+    private void JumpMethod1()
     {
-        if (Input.GetButtonDown("Jump") && !Jumped)
+        if (Input.GetButtonDown("Jump") && isGround())
         {
-            ps = PlayerState.jumping;
-            anim.SetInteger("state", (int)ps);
-
             Vector3 vec = new Vector3(0f, jump_power, 0f);
             transform.position += vec * speed * Time.deltaTime;            
         }        
     }
 
-    void JumpMethod2()
+    private void JumpMethod2()
     {
-        if (Input.GetButtonDown("Jump") && !Jumped)
+        if (Input.GetButtonDown("Jump") && isGround())
         {            
             rigid.velocity = new Vector2(0, jump_power);
-            ps = PlayerState.jumping;
-            anim.SetInteger("state", (int)ps);
         }
     }
 
-    void JumpMethod3()
+    private void JumpMethod3()
     {
-        if (Input.GetButtonDown("Jump") && !Jumped)
+        if (Input.GetButtonDown("Jump") && isGround())
         {
             Vector2 vec = new Vector2(rigid.velocity.x, jump_power);
             rigid.AddForce(vec, ForceMode2D.Impulse);
-            ps = PlayerState.jumping;
-            anim.SetInteger("state", (int)ps);
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void updateAnimationState()
     {
-        if (collision.gameObject.tag == "Ground")
-        {
-            Debug.Log("Ground!!!");
-            ps = PlayerState.idle;
-            anim.SetInteger("state", (int)ps);
-        }
+        if (isGround())
+            ps = isStop ? PlayerState.idle : PlayerState.running;
+        else
+            ps = isGoingDown() ? PlayerState.falling : PlayerState.jumping;
+
+        anim.SetInteger("state", (int)ps);
     }
 }
