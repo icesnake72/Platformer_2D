@@ -26,6 +26,9 @@ public class PlayerControll : MonoBehaviour
     [SerializeField]
     private LayerMask jumpableGround;
 
+    [SerializeField]
+    private AudioSource jumpSound;
+
     private Animator anim;
     private Rigidbody2D rigid;
     private SpriteRenderer sr;
@@ -185,6 +188,7 @@ public class PlayerControll : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && isGround())
         {
+            jumpSound.Play();
             Vector3 vec = new Vector3(0f, jump_power, 0f);
             transform.position += vec * speed * Time.deltaTime;            
         }        
@@ -193,7 +197,8 @@ public class PlayerControll : MonoBehaviour
     private void JumpMethod2()
     {
         if (Input.GetButtonDown("Jump") && isGround())
-        {            
+        {
+            jumpSound.Play();
             rigid.velocity = new Vector2(0, jump_power);
         }
     }
@@ -202,6 +207,7 @@ public class PlayerControll : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && isGround())
         {
+            jumpSound.Play();
             Vector2 vec = new Vector2(rigid.velocity.x, jump_power);
             rigid.AddForce(vec, ForceMode2D.Impulse);
         }

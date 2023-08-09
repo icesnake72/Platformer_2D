@@ -7,6 +7,10 @@ public class ItemCollector : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI text;
+
+    [SerializeField]
+    private AudioSource collectSound;
+
     private int countCherry;
 
 
@@ -19,7 +23,10 @@ public class ItemCollector : MonoBehaviour
     {
         if ( collision.gameObject.CompareTag("Cherry") )
         {
+            collectSound.Play();
+
             Destroy(collision.gameObject);
+
             string chr = $"Cherry : {++countCherry}";
             text.SetText(chr);
         }

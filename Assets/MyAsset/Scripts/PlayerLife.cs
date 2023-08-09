@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerLife : MonoBehaviour
 {
+    [SerializeField]
+    private AudioSource deathSound;
+
     private Animator anim;
     private Rigidbody2D rigid;
     private void Awake()
@@ -30,6 +33,8 @@ public class PlayerLife : MonoBehaviour
         효율성: 캐릭터가 죽은 상태에서 물리 시뮬레이션이 계속 돌아가면 게임 성능에 부하를 줄 수 있습니다. Static으로 설정하면 해당 객체에 대한 물리적 계산이 생략되므로 게임의 효율성이 향상됩니다.
         따라서 플레이어 캐릭터의 죽음을 처리할 때, Rigidbody2D를 Static으로 설정하여 물리적인 영향을 제어하고, 적절한 시기에 게임 오버 또는 리스폰을 수행하는 것이 보통 좋은 접근 방식입니다.
         */
+        deathSound.Play();
+
 
         rigid.bodyType = RigidbodyType2D.Static;
         anim.SetTrigger("dead");
