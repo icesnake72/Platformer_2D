@@ -16,7 +16,11 @@ public class ItemCollector : MonoBehaviour
 
     private void Awake()
     {
-        countCherry = 0;
+        // 이전 씬에서 저장한 데이터를 가져옴
+        int cherryCount = PlayerPrefs.GetInt("Cherry");
+
+        countCherry = cherryCount;
+        SetCherryCount();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -26,9 +30,18 @@ public class ItemCollector : MonoBehaviour
             collectSound.Play();
 
             Destroy(collision.gameObject);
-
-            string chr = $"Cherry : {++countCherry}";
-            text.SetText(chr);
+            SetCherryCount();
         }
+    }
+
+    private void SetCherryCount()
+    {
+        string chr = $"Cherry : {++countCherry}";
+        text.SetText(chr);
+    }
+
+    public int GetCherryCount()
+    {
+        return countCherry;
     }
 }
