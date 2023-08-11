@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Cherry
   - Trap
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
