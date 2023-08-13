@@ -9,6 +9,7 @@ TagManager:
   - Cherry
   - Trap
   - CheckPoint
+  - Dummy
   layers:
   - Default
   - TransparentFX
